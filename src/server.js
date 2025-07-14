@@ -1,12 +1,12 @@
-require('dotenv').config();
-const Hapi = require('@hapi/hapi');
-const notes = require('./api/notes');
-const NotesService = require('./services/inMemory/NotesServices');
-const NotesValidator = require('./validator/notes');
-const ClientError = require('./exceptions/ClientError');
+import 'dotenv/config.js';
+import Hapi from '@hapi/hapi';
+import notes from './api/notes/index.js';
+import NoteServices from './services/postgres/NotesServices.js';
+import NotesValidator from './validator/notes/index.js';
+import ClientError from './exceptions/ClientError.js';
 
 const init = async () => {
-  const notesService = new NotesService();
+  const notesService = new NoteServices();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -27,31 +27,31 @@ const init = async () => {
   });
 
   server.ext('onPreResponse', (request, h) => {
-  // mendapatkan konteks response dari request
-  const { response } = request;
-  // penanganan client error secara internal.
-  if (response instanceof ClientError) {
-    const newResponse = h.response({
-      status: 'fail',
-      message: response.message,
-    });
-    newResponse.code(response.statusCode);
-    return newResponse;
-  }
-  // Penanganan server error
-  if (response instanceof Error) {
-    // Log error untuk debugging
-    console.error(response);
-    const newResponse = h.response({
-      status: 'error',
-      message: 'Terjadi kegagalan pada server kami',
-    });
-    newResponse.code(500);
-    return newResponse;
-  }
-     
-  return h.continue;
-});
+    // mendapatkan konteks response dari request
+    const { response } = request;
+    // penanganan client error secara internal.
+    if (response instanceof ClientError) {
+      const newResponse = h.response({
+        status: 'fail',
+        message: response.message,
+      });
+      newResponse.code(response.statusCode);
+      return newResponse;
+    }
+    // Penanganan server error
+    if (response instanceof Error) {
+      // Log error untuk debugging
+      console.error(response);
+      const newResponse = h.response({
+        status: 'error',
+        message: 'Terjadi kegagalan pada server kami',
+      });
+      newResponse.code(500);
+      return newResponse;
+    }
+      
+    return h.continue;
+  });
 
   await server.start();
   console.log(`Server berjalan pada ${server.info.uri}`);

@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
-const InvariantError = require("../../exceptions/InvariantError");
-const NotFoundError = require("../../exceptions/NotFoundError");
-const { mapDBToModel } = require("../../utils");
+import InvariantError from '../../exceptions/InvariantError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
+import { mapDBToModel } from "../../utils/index.js";
 
 class NoteServices {
     constructor(){
@@ -38,7 +38,7 @@ class NoteServices {
 
     async getNoteById(id) {
         const query = {
-            text: 'SELECT * FROm WHERE id = $1',
+            text: 'SELECT * FROM notes WHERE id = $1',
             values: [id],
         };
         const result = await this._pool.query(query);
@@ -51,7 +51,7 @@ class NoteServices {
     }
 
     async editNoteById(id, {title, body, tags}){
-        const updatedAt = new Date().toDateString();
+        const updatedAt = new Date().toISOString();
         const query = {
             text: 'UPDATE notes SET title = $1, body = $2, tags = $3, updated_at = $4 WHERE id = $5 RETURNING id',
             values: [title, body, tags, updatedAt, id],
@@ -75,10 +75,10 @@ class NoteServices {
         const result = await this._pool.query(query);
 
         if(!result.rows.length) {
-            throw new NotFoundError('Catatn gagal dihapus, Id Tidak ditemukan');
+            throw new NotFoundError('Catatan gagal dihapus, Id Tidak ditemukan');
         }
 
     }
 }
 
-module.exports = NoteServices;
+export default NoteServices;
