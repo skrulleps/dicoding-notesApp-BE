@@ -10,12 +10,12 @@ class NotesHandler {
    this.deleteNoteByIdHandler = this.deleteNoteByIdHandler.bind(this);
  }
  
- postNoteHandler(request, h) {
+ async postNoteHandler(request, h) {
    this._validator.validateNotePayload(request.payload);
    const { title = 'untitled', body, tags } = request.payload;
- 
-   const noteId = this._service.addNote({ title, body, tags });
- 
+
+   const noteId = await this._service.addNote({ title, body, tags });
+
    const response = h.response({
      status: 'success',
      message: 'Catatan berhasil ditambahkan',
@@ -27,20 +27,29 @@ class NotesHandler {
    return response;
  }
  
- getNotesHandler() {
-   const notes = this._service.getAllNotes();
-   return {
-     status: 'success',
-     data: {
-       notes,
-     },
-    
-   };
+ async getNotesHandler(request, h) {
+   try {
+     const notes = await this._service.getNotes();
+     return {
+       status: 'success',
+       data: {
+         notes,
+       },
+     };
+   } catch (error) {
+     const response = h.response({
+       status: 'error',
+       message: 'Terjadi kegagalan pada server kami',
+     });
+     response.code(500);
+     console.error(error);
+     return response;
+   }
  }
  
- getNoteByIdHandler(request, h) {
+ async getNoteByIdHandler(request, h) {
    const { id } = request.params;
-   const note = this._service.getNoteById(id);
+   const note = await this._service.getNoteById(id);
    return {
      status: 'success',
      data: {
@@ -49,22 +58,22 @@ class NotesHandler {
    };
  }
  
- putNoteByIdHandler(request, h) {
+ async putNoteByIdHandler(request, h) {
    this._validator.validateNotePayload(request.payload);
    const { id } = request.params;
- 
-   this._service.editNoteById(id, request.payload);
- 
+
+   await this._service.editNoteById(id, request.payload);
+
    return {
      status: 'success',
      message: 'Catatan berhasil diperbarui',
    };
  }
  
- deleteNoteByIdHandler(request, h) {
+ async deleteNoteByIdHandler(request, h) {
    const { id } = request.params;
-   this._service.deleteNoteById(id);
- 
+   await this._service.deleteNoteById(id);
+
    return {
      status: 'success',
      message: 'Catatan berhasil dihapus',
