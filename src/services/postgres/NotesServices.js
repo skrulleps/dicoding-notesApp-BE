@@ -1,8 +1,8 @@
-import { nanoid } from "nanoid";
-import { Pool } from "pg";
-import InvariantError from '../../exceptions/InvariantError.js';
-import NotFoundError from '../../exceptions/NotFoundError.js';
-import { mapDBToModel } from "../../utils/index.js";
+const { nanoid } = require("nanoid");
+const { Pool } = require("pg");
+const InvariantError = require('../../exceptions/InvariantError.js');
+const NotFoundError = require('../../exceptions/NotFoundError.js');
+const { mapDBToModel } = require("../../utils/index.js");
 
 class NoteServices {
     constructor(){
@@ -81,4 +81,4 @@ class NoteServices {
     }
 }
 
-export default NoteServices;
+module.exports = NoteServices;
