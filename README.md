@@ -1,13 +1,13 @@
 # Notes App Backend - Dicoding Backend Practice
 
-This is a simple backend project for managing notes, created as part of the Dicoding Backend Developer learning path. The project is built using the Hapi framework and stores notes in memory.
+This is a simple backend project for managing notes, created as part of the Dicoding Backend Developer learning path. The project is built using the Hapi framework and stores notes in a PostgreSQL database.
 
 ## Features
 
 - Create, read, update, and delete notes
 - Notes have title, body, tags, and timestamps
 - RESTful API endpoints
-- In-memory data storage (data will be lost when the server stops)
+- PostgreSQL database storage
 
 ## Installation
 
@@ -18,6 +18,14 @@ This is a simple backend project for managing notes, created as part of the Dico
 npm install
 ```
 
+3. Set up your PostgreSQL database and configure connection settings in environment variables (`.env` file or system environment).
+
+4. Run the database migration to create the necessary tables:
+
+```bash
+npx node-pg-migrate up
+```
+
 ## Usage
 
 Start the server with the following command:
@@ -26,7 +34,7 @@ Start the server with the following command:
 node src/server.js
 ```
 
-The server will run on port 5000 by default. You can access the API at:
+The server will run on the port specified in your environment variables (default is 5000). You can access the API at:
 
 ```
 http://localhost:5000
@@ -51,10 +59,12 @@ http://localhost:5000
 
 - [Hapi](https://hapi.dev/) - Node.js framework for building APIs
 - [nanoid](https://github.com/ai/nanoid) - For generating unique IDs
+- [pg](https://node-postgres.com/) - PostgreSQL client for Node.js
+- [node-pg-migrate](https://github.com/salsita/node-pg-migrate) - Database migration tool
 
 ## Limitations
 
-- Data is stored in memory, so all notes will be lost when the server stops.
+- Requires a running PostgreSQL database.
 - This project is intended for learning and practice purposes only.
 
 ## License
