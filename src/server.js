@@ -1,9 +1,9 @@
-import 'dotenv/config.js';
-import Hapi from '@hapi/hapi';
-import notes from './api/notes/index.js';
-import NoteServices from './services/postgres/NotesServices.js';
-import NotesValidator from './validator/notes/index.js';
-import ClientError from './exceptions/ClientError.js';
+require('dotenv/config');
+const Hapi = require('@hapi/hapi');
+const notes = require('./api/notes/index.js');
+const NoteServices = require('./services/postgres/NotesServices.js');
+const NotesValidator = require('./validator/notes/index.js');
+const ClientError = require('./exceptions/ClientError.js');
 
 const init = async () => {
   const notesService = new NoteServices();
