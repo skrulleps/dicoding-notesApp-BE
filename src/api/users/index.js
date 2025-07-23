@@ -5,8 +5,8 @@ module.exports = {
     name: 'users',
     version: '1.0.0',
     description: 'User management API',
-    register: async (server, { services, validator }) => {
-        const usersHandler = new UsersHandler(services, validator);
+register: async (server, { service, validator }) => {
+        const usersHandler = new UsersHandler(service, validator);
         server.route(routes(usersHandler));
     }
 }
