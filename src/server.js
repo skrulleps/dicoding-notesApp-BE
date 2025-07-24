@@ -34,13 +34,14 @@ const init = async () => {
     },
   });
 
+  // registrasi plugin eksternal
   await server.register([
     {
       plugin: Jwt,
     },
   ]);
-
-  // mendefinisikan strategy autentikasi JWT
+ 
+  // mendefinisikan strategy autentikasi jwt
   server.auth.strategy('notesapp_jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
@@ -83,6 +84,8 @@ const init = async () => {
     },
   ]);
 
+  const Boom = require('@hapi/boom');
+
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request;
@@ -95,6 +98,27 @@ const init = async () => {
       newResponse.code(response.statusCode);
       return newResponse;
     }
+
+    // Handle Boom errors (client errors from hapi plugins like jwt)
+    if (Boom.isBoom(response)) {
+      if (!response.isServer) {
+        const newResponse = h.response({
+          status: 'fail',
+          message: response.message,
+        });
+        newResponse.code(response.output.statusCode);
+        return newResponse;
+      }
+      // For server errors, log and return generic message
+      console.error(response);
+      const newResponse = h.response({
+        status: 'error',
+        message: 'Terjadi kegagalan pada server kami',
+      });
+      newResponse.code(500);
+      return newResponse;
+    }
+
     // Penanganan server error
     if (response instanceof Error) {
       // Log error untuk debugging
