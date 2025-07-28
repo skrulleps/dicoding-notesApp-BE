@@ -10,7 +10,7 @@ class NoteServices {
         this._pool = new Pool();
     }
 
-    async addNote({title, body, tags}) {
+    async addNote({title, body, tags, owner}) {
         const id = nanoid(16);
         const createdAt = new Date().toISOString();
         const updatedAt = createdAt;
