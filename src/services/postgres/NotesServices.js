@@ -2,6 +2,7 @@ const { nanoid } = require("nanoid");
 const { Pool } = require("pg");
 const InvariantError = require('../../exceptions/InvariantError.js');
 const NotFoundError = require('../../exceptions/NotFoundError.js');
+const AuthorizationError = require('../../exceptions/AuthorizationError.js');
 const { mapDBToModel } = require("../../utils/index.js");
 
 class NoteServices {
@@ -15,8 +16,8 @@ class NoteServices {
         const updatedAt = createdAt;
 
         const query = {
-            text: "INSERT INTO notes VALUES($1, $2, $3, $4, $5, $6) RETURNING id",
-            values: [id, title, body, tags, createdAt, updatedAt],
+            text: "INSERT INTO notes VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+            values: [id, title, body, tags, createdAt, updatedAt, owner],
         };
 
         const result = await this._pool.query(query);
@@ -28,9 +29,10 @@ class NoteServices {
         return result.rows[0].id;
     }
     
-    async getNotes() {
+    async getNotes(owner) {
         const query = {
-            text: "SELECT * FROM notes",
+            text: "SELECT * FROM notes WHERE owner = $1",
+            values: [owner],
         };
         const result =  await this._pool.query(query);
         return result.rows.map(mapDBToModel);
@@ -78,6 +80,23 @@ class NoteServices {
             throw new NotFoundError('Catatan gagal dihapus, Id Tidak ditemukan');
         }
 
+    }
+
+    async verifyNoteOwner(id, owner) {
+        const query = {
+            text: 'SELECT * FROM notes WHERE id = $1',
+            values: [id],
+        };
+
+         if (!result.rows.length) {
+            throw new NotFoundError('Catatan tidak ditemukan');
+        }
+
+        const note = result.rows[0];
+
+        if (note.owner !== owner) {
+            throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
+        }
     }
 }
 
