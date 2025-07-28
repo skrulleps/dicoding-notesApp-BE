@@ -76,9 +76,9 @@ class NoteServices {
 
         const result = await this._pool.query(query);
 
-        if(!result.rows.length) {
-            throw new NotFoundError('Catatan gagal dihapus, Id Tidak ditemukan');
-        }
+if(!result.rows.length) {
+    throw new NotFoundError('Catatan tidak ditemukan!');
+}
 
     }
 
@@ -91,7 +91,7 @@ class NoteServices {
         const result = await this._pool.query(query);
 
          if (!result.rows.length) {
-            throw new NotFoundError('Catatan tidak ditemukan');
+            throw new NotFoundError('Catatan tidak ditemukan!');
         }
 
         const note = result.rows[0];
