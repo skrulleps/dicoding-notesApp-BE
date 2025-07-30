@@ -1,13 +1,42 @@
 # Notes App Backend - Dicoding Backend Practice
 
-This is a simple backend project for managing notes, created as part of the Dicoding Backend Developer learning path. The project is built using the Hapi framework and stores notes in a PostgreSQL database.
+This is a simple backend project for managing notes, created as part of the Dicoding Backend Developer learning path. The project is built using the Hapi framework and stores notes in a PostgreSQL database. It supports user registration, authentication, and authorization to manage notes securely.
+
+## Project Overview
+
+This backend service allows users to register, authenticate, and manage their personal notes. Each note is owned by a user, and only the owner can access or modify their notes. The project implements token-based authentication with access and refresh tokens to secure API endpoints.
 
 ## Features
 
+- User registration and retrieval
+- User authentication with access and refresh tokens
+- Token refresh and logout functionality
 - Create, read, update, and delete notes
 - Notes have title, body, tags, and timestamps
-- RESTful API endpoints
-- PostgreSQL database storage
+- Notes are owned by users with authorization enforced
+- RESTful API endpoints with validation and error handling
+- PostgreSQL database storage with migrations for users, notes, and authentications
+
+## API Endpoints
+
+| Method | Endpoint               | Description                          |
+|--------|------------------------|------------------------------------|
+| POST   | /users                 | Register a new user                 |
+| GET    | /users/{id}            | Get user details by user ID         |
+| POST   | /authentications       | Authenticate user and get tokens   |
+| PUT    | /authentications       | Refresh access token                |
+| DELETE | /authentications       | Logout and delete refresh token    |
+| POST   | /notes                 | Create a new note                   |
+| GET    | /notes                 | Get all notes for authenticated user|
+| GET    | /notes/{id}            | Get a note by its ID (owner only)  |
+| PUT    | /notes/{id}            | Update a note by its ID (owner only)|
+| DELETE | /notes/{id}            | Delete a note by its ID (owner only)|
+
+### Notes
+
+- When creating a note, the `title` field is optional and defaults to "untitled" if not provided.
+- API responses include status and message fields in Indonesian language.
+- Authorization is enforced to ensure users can only access their own notes.
 
 ## Installation
 
@@ -40,27 +69,14 @@ The server will run on the port specified in your environment variables (default
 http://localhost:5000
 ```
 
-## API Endpoints
-
-| Method | Endpoint         | Description                  |
-|--------|------------------|------------------------------|
-| POST   | /notes           | Create a new note             |
-| GET    | /notes           | Get all notes                 |
-| GET    | /notes/{id}      | Get a note by its ID          |
-| PUT    | /notes/{id}      | Update a note by its ID       |
-| DELETE | /notes/{id}      | Delete a note by its ID       |
-
-### Notes
-
-- When creating a note, the `title` field is optional and defaults to "untitled" if not provided.
-- The API responses include status and message fields in Indonesian language.
-
 ## Technologies Used
 
 - [Hapi](https://hapi.dev/) - Node.js framework for building APIs
 - [nanoid](https://github.com/ai/nanoid) - For generating unique IDs
 - [pg](https://node-postgres.com/) - PostgreSQL client for Node.js
 - [node-pg-migrate](https://github.com/salsita/node-pg-migrate) - Database migration tool
+- Token-based authentication with access and refresh tokens
+- Input validation and error handling
 
 ## Limitations
 
