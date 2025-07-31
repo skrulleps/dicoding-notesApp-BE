@@ -12,20 +12,24 @@ class CollaborationsHandler {
     }
 
     async postCollaborationHandler(request, h) {
-        this._validator.validatePostCollaborationPayload(request.payload);
+        this._validator.validateCollaborationPayload(request.payload);
+        console.log(request.payload);
         const { id: credentialId } = request.auth.credentials;
         const { noteId, userId } = request.payload;
-
+        console.log(credentialId, noteId, userId);
+    
         await this._notesService.verifyNoteOwner(noteId, credentialId);
         const collaborationId = await this._collaborationsService.addCollaboration(noteId, userId);
-
-        return h.response({
-            status: 'success',
-            message: 'Kolaborasi berhasil ditambahkan',
-            data: {
-                collaborationId,
-            },
-        }).code(201);
+    
+        const response = h.response({
+        status: 'success',
+        message: 'Kolaborasi berhasil ditambahkan',
+        data: {
+            collaborationId,
+        },
+        });
+        response.code(201);
+        return response;
     }
 
     async deleteCollaborationHandler(request, h) {
