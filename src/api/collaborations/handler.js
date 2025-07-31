@@ -33,7 +33,7 @@ class CollaborationsHandler {
     }
 
     async deleteCollaborationHandler(request, h) {
-        this._validator.validateDeleteCollaborationPayload(request.payload);
+        this._validator.validateCollaborationPayload(request.payload);
         const { id: credentialId } = request.auth.credentials;
         const { noteId, userId } = request.payload;
 
