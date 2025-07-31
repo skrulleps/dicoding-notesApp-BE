@@ -25,10 +25,10 @@ const CollaborationsService = require('./services/postgres/CollaborationsService
 const CollaborationsValidator = require('./validator/collaborations/index.js');
 
 const init = async () => {
-  const notesService = new NoteServices();
+  const collaborationsService = new CollaborationsService();
+  const notesService = new NoteServices(collaborationsService);
   const userService = new UserServices();
   const authenticationsService = new AuthenticationsService();
-  const collaborationsService = new CollaborationsService();
 
   const server = Hapi.server({
     port: process.env.PORT,
