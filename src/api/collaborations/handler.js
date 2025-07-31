@@ -36,6 +36,8 @@ class CollaborationsHandler {
         this._validator.validateCollaborationPayload(request.payload);
         const { id: credentialId } = request.auth.credentials;
         const { noteId, userId } = request.payload;
+        // console.log(`Fetching collaboration for user ID: ${credentialId}, note ID: ${noteId}, user ID: ${userId}`);
+
 
         await this._notesService.verifyNoteOwner(noteId, credentialId);
         await this._collaborationsService.deleteCollaboration(noteId, userId);
