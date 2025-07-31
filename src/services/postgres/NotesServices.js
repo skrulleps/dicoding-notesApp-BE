@@ -41,7 +41,10 @@ class NoteServices {
 
     async getNoteById(id) {
         const query = {
-            text: 'SELECT * FROM notes WHERE id = $1',
+            text: `SELECT notes.*, users.username
+                    FROM notes
+                    LEFT JOIN users ON users.id = notes.owner
+                    WHERE notes.id = $1`,
             values: [id],
         };
         const result = await this._pool.query(query);
@@ -77,9 +80,9 @@ class NoteServices {
 
         const result = await this._pool.query(query);
 
-if(!result.rows.length) {
-    throw new NotFoundError('Catatan tidak ditemukan!');
-}
+        if(!result.rows.length) {
+         throw new NotFoundError('Catatan tidak ditemukan!');
+        }
 
     }
 
