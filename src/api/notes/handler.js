@@ -55,10 +55,10 @@ class NotesHandler {
  async getNotesHandler(request, h) {
    try {
      const { id: credentialId } = request.auth.credentials;
-     console.log(`Fetching notes for user ID: ${credentialId}`);
+    //  console.log(`Fetching notes for user ID: ${credentialId}`);
      
      const notes = await this._service.getNotes(credentialId);
-     console.log(notes);
+    //  console.log(notes);
      return {
        status: 'success',
        data: {
@@ -80,12 +80,12 @@ class NotesHandler {
   try {
     const { id } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    console.log(`Fetching note with ID: ${id} for user ID: ${credentialId}`);
+    // console.log(`Fetching note with ID: ${id} for user ID: ${credentialId}`);
 
     await this._service.verifyNoteAccess(id, credentialId);
     const note = await this._service.getNoteById(id);
     
-    console.log(note);
+    // console.log(note);
     return {
       status: 'success',
       data: {

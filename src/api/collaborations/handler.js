@@ -13,10 +13,10 @@ class CollaborationsHandler {
 
     async postCollaborationHandler(request, h) {
         this._validator.validateCollaborationPayload(request.payload);
-        console.log(request.payload);
+        // console.log(request.payload);
         const { id: credentialId } = request.auth.credentials;
         const { noteId, userId } = request.payload;
-        console.log(credentialId, noteId, userId);
+        // console.log(credentialId, noteId, userId);
     
         await this._notesService.verifyNoteOwner(noteId, credentialId);
         const collaborationId = await this._collaborationsService.addCollaboration(noteId, userId);
