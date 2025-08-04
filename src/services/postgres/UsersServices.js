@@ -75,6 +75,21 @@ class UsersService {
 
         return id;
     }
+
+    async getUsersByUsername(username) {
+        const query = {
+            text: 'SELECT id, username, fullname FROM users WHERE username ILIKE $1',
+            values: [`%${username}%`],
+        };
+
+        const result = await this._pool.query(query);
+
+        if (!result.rows.length) {
+            throw new NotFoundError('Pengguna tidak ditemukan');
+        }
+
+        return result.rows;
+    }
 }
 
 module.exports = UsersService;
