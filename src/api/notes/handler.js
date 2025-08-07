@@ -80,7 +80,7 @@ class NotesHandler {
   try {
     const { id } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    // console.log(`Fetching note with ID: ${id} for user ID: ${credentialId}`);
+    // console.log(`Fetching note with ID: ${id} for user ID: ${credentialId}`);  
 
     await this._service.verifyNoteAccess(id, credentialId);
     const note = await this._service.getNoteById(id);
