@@ -1,6 +1,7 @@
 require('dotenv/config');
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
 const path = require('path');
 const ClientError = require('./exceptions/ClientError.js');
 
@@ -57,6 +58,9 @@ const init = async () => {
     {
       plugin: Jwt,
     },
+    {
+      plugin: Inert,
+    }
   ]);
  
   // mendefinisikan strategy autentikasi jwt
