@@ -27,7 +27,7 @@ class NoteServices {
         if(!result.rows[0].id){
             throw new InvariantError("Note gagal ditambahkan");
         }
-
+        await this._cacheService.delete(`notes:${owner}`);
         return result.rows[0].id;
     }
     
@@ -44,7 +44,7 @@ class NoteServices {
             };
             const result =  await this._pool.query(query);
             const mappedResult = result.rows.map(mapDBToModel);
-            
+
             // catatan akan disimpan pada cache sebelum fungsi getNotes dikembalikan
             await this._cacheService.set(`notes:${owner}`, JSON.stringify(mappedResult));
             return mappedResult;
@@ -81,7 +81,9 @@ class NoteServices {
             throw new NotFoundError('Gagal memperbarui Catatan. Id tidak ditemukan!');
         }
 
-        return result.rows[0];
+        const { owner } = result.rows[0];
+        await this._cacheService.delete(`notes:${owner}`);
+        // return result.rows[0];
     }
 
     async deleteNoteById(id) {
@@ -96,6 +98,8 @@ class NoteServices {
          throw new NotFoundError('Catatan tidak ditemukan!');
         }
 
+        const { owner } = result.rows[0];
+        await this._cacheService.delete(`notes:${owner}`);
     }
 
     async verifyNoteOwner(id, owner) {
