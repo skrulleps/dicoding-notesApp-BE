@@ -1,88 +1,251 @@
 # Notes App Backend - Dicoding Backend Practice
 
-This is a simple backend project for managing notes, created as part of the Dicoding Backend Developer learning path. The project is built using the Hapi framework and stores notes in a PostgreSQL database. It supports user registration, authentication, and authorization to manage notes securely.
+This is a comprehensive backend project for managing notes, created as part of the Dicoding Backend Developer learning path. The project is built using **Hapi.js** framework and implements a complete RESTful API with authentication, authorization, collaboration features, and export capabilities.
 
-## Project Overview
+## 🚀 Project Overview
 
-This backend service allows users to register, authenticate, and manage their personal notes. Each note is owned by a user, and only the owner can access or modify their notes. The project implements token-based authentication with access and refresh tokens to secure API endpoints.
+This backend service provides a full-featured notes management system with user authentication, real-time collaboration, file uploads, and data export functionality. It uses PostgreSQL as the primary database with Redis for caching and RabbitMQ for message queuing.
 
-## Features
+## ✨ Features
 
-- User registration and retrieval
-- User authentication with access and refresh tokens
-- Token refresh and logout functionality
-- Create, read, update, and delete notes
-- Notes have title, body, tags, and timestamps
-- Notes are owned by users with authorization enforced
-- RESTful API endpoints with validation and error handling
-- PostgreSQL database storage with migrations for users, notes, and authentications
+### Core Features
+- **User Management**: Registration, authentication, and profile management
+- **Notes Management**: Create, read, update, delete (CRUD) operations for notes
+- **Authentication**: JWT-based authentication with access and refresh tokens
+- **Authorization**: Role-based access control for notes ownership
+- **Collaboration**: Share notes with other users for collaborative editing
+- **File Upload**: Upload images for notes with storage service
+- **Data Export**: Export notes to PDF via email
+- **Caching**: Redis integration for improved performance
+- **Message Queue**: RabbitMQ for asynchronous export processing
 
-## API Endpoints
+### Advanced Features
+- **Real-time Collaboration**: Multiple users can edit shared notes
+- **Search Functionality**: Search notes by username and tags
+- **Validation**: Input validation using Joi
+- **Error Handling**: Comprehensive error handling with meaningful messages
+- **Security**: Password hashing, JWT tokens, and input sanitization
 
-| Method | Endpoint               | Description                          |
-|--------|------------------------|------------------------------------|
-| POST   | /users                 | Register a new user                 |
-| GET    | /users/{id}            | Get user details by user ID         |
-| POST   | /authentications       | Authenticate user and get tokens   |
-| PUT    | /authentications       | Refresh access token                |
-| DELETE | /authentications       | Logout and delete refresh token    |
-| POST   | /notes                 | Create a new note                   |
-| GET    | /notes                 | Get all notes for authenticated user|
-| GET    | /notes/{id}            | Get a note by its ID (owner only)  |
-| PUT    | /notes/{id}            | Update a note by its ID (owner only)|
-| DELETE | /notes/{id}            | Delete a note by its ID (owner only)|
+## 🛠️ Technologies Used
 
-### Notes
+- **[Hapi.js](https://hapi.dev/)** - Node.js framework for building APIs
+- **[PostgreSQL](https://www.postgresql.org/)** - Primary database
+- **[Redis](https://redis.io/)** - Caching and session storage
+- **[RabbitMQ](https://www.rabbitmq.com/)** - Message queuing for exports
+- **[JWT](https://jwt.io/)** - Token-based authentication
+- **[Joi](https://joi.dev/)** - Input validation
+- **[bcrypt](https://www.npmjs.com/package/bcrypt)** - Password hashing
+- **[nanoid](https://github.com/ai/nanoid)** - Unique ID generation
+- **[node-pg-migrate](https://github.com/salsita/node-pg-migrate)** - Database migrations
+- **[ESLint](https://eslint.org/)** - Code linting
 
-- When creating a note, the `title` field is optional and defaults to "untitled" if not provided.
-- API responses include status and message fields in Indonesian language.
-- Authorization is enforced to ensure users can only access their own notes.
+## 📋 API Endpoints
 
-## Installation
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/users` | Register new user |
+| GET | `/users/{id}` | Get user details |
+| POST | `/authentications` | Login and get tokens |
+| PUT | `/authentications` | Refresh access token |
+| DELETE | `/authentications` | Logout |
 
-1. Clone the repository or download the source code.
-2. Install dependencies using npm:
+### Notes Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/notes` | Create new note |
+| GET | `/notes` | Get all user's notes |
+| GET | `/notes/{id}` | Get specific note |
+| PUT | `/notes/{id}` | Update note |
+| DELETE | `/notes/{id}` | Delete note |
 
+### Collaboration
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/collaborations` | Add collaborator to note |
+| DELETE | `/collaborations` | Remove collaborator from note |
+
+### File Upload
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/upload/images` | Upload image for notes |
+
+### Export
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/export/notes` | Export notes to PDF via email |
+
+## 🏗️ Database Schema
+
+The project uses PostgreSQL with the following main tables:
+- **users**: User accounts and profiles
+- **notes**: Notes with title, body, tags, and metadata
+- **authentications**: JWT refresh tokens
+- **collaborations**: Note sharing relationships
+- **uploads**: File upload metadata
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+- Node.js (v16 or higher)
+- PostgreSQL (v12 or higher)
+- Redis
+- RabbitMQ
+
+### 1. Clone the repository
+```bash
+git clone [repository-url]
+cd notes-app-backend
+```
+
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
-3. Set up your PostgreSQL database and configure connection settings in environment variables (`.env` file or system environment).
+### 3. Set up environment variables
+Create a `.env` file:
+```env
+# Database
+PGUSER=your_username
+PGPASSWORD=your_password
+PGDATABASE=notes_app
+PGHOST=localhost
+PGPORT=5432
 
-4. Run the database migration to create the necessary tables:
+# Redis
+REDIS_SERVER=localhost
+
+# RabbitMQ
+RABBITMQ_SERVER=amqp://localhost
+
+# JWT
+ACCESS_TOKEN_KEY=your_access_token_secret
+REFRESH_TOKEN_KEY=your_refresh_token_secret
+
+# Storage
+STORAGE_PATH=./uploads
+```
+
+### 4. Run database migrations
+```bash
+npm run migrate up
+```
+
+### 5. Start the server
+```bash
+# Development
+npm run serve
+
+# Production
+npm start
+```
+
+The server will run on `http://localhost:3000`
+
+## 🔧 Development Scripts
 
 ```bash
-npx node-pg-migrate up
+npm run serve          # Start development server with nodemon
+npm start             # Start production server
+npm run lint          # Run ESLint
+npm run migrate       # Run database migrations
 ```
 
-## Usage
+## 📊 Testing
 
-Start the server with the following command:
+The project includes comprehensive Postman collections for testing all endpoints:
+- **Notes API Test**: Complete API testing collection
+- **Authentication flows**: User registration, login, token refresh
+- **Collaboration testing**: Note sharing and permissions
+- **Export functionality**: PDF export via email
 
-```bash
-node src/server.js
+## 🔐 Authentication Flow
+
+1. **Register**: Create a new user account
+2. **Login**: Obtain access and refresh tokens
+3. **Use Access Token**: Include in Authorization header as Bearer token
+4. **Refresh Token**: Use refresh token to get new access token
+5. **Logout**: Invalidate refresh token
+
+## 🤝 Collaboration Workflow
+
+1. **Owner creates note**: User creates a note they own
+2. **Add collaborator**: Owner adds another user as collaborator
+3. **Collaborator access**: Collaborator can view and edit the shared note
+4. **Remove collaborator**: Owner can remove collaborator access
+
+## 📁 Project Structure
+
+```
+notes-app-backend/
+├── src/
+│   ├── api/
+│   │   ├── authentications/
+│   │   ├── collaborations/
+│   │   ├── exports/
+│   │   ├── notes/
+│   │   ├── uploads/
+│   │   └── users/
+│   ├── services/
+│   │   ├── postgres/
+│   │   ├── redis/
+│   │   ├── rabbitmq/
+│   │   └── storage/
+│   ├── validator/
+│   ├── exceptions/
+│   └── utils/
+├── migrations/
+├── postman/
+└── uploads/
 ```
 
-The server will run on the port specified in your environment variables (default is 5000). You can access the API at:
+## 🧪 Testing with Postman
 
+Import the provided Postman collections:
+1. **Notes API Test.postman_collection.json** - Complete API tests
+2. **Notes API Test.postman_environment.json** - Environment variables
+
+## 🔒 Security Features
+
+- Password hashing with bcrypt
+- JWT token authentication
+- Input validation with Joi
+- SQL injection prevention
+- XSS protection
+- Rate limiting ready
+
+## 📈 Performance Optimizations
+
+- Redis caching for frequently accessed data
+- Database indexing for search queries
+- Efficient pagination for large datasets
+- Background job processing for exports
+
+## 🐛 Troubleshooting
+
+### Common Issues
+1. **Database connection**: Ensure PostgreSQL is running and credentials are correct
+2. **Redis connection**: Check Redis server is running on default port
+3. **RabbitMQ connection**: Verify RabbitMQ is accessible
+4. **Port conflicts**: Default port is 3000, change in .env if needed
+
+### Debug Mode
+Enable debug logging by setting:
+```env
+NODE_ENV=development
 ```
-http://localhost:5000
-```
 
-## Technologies Used
+## 📄 License
 
-- [Hapi](https://hapi.dev/) - Node.js framework for building APIs
-- [nanoid](https://github.com/ai/nanoid) - For generating unique IDs
-- [pg](https://node-postgres.com/) - PostgreSQL client for Node.js
-- [node-pg-migrate](https://github.com/salsita/node-pg-migrate) - Database migration tool
-- Token-based authentication with access and refresh tokens
-- Input validation and error handling
+This project is open source and available under the [ISC License](LICENSE).
 
-## Limitations
+## 🙏 Acknowledgments
 
-- Requires a running PostgreSQL database.
-- This project is intended for learning and practice purposes only.
+- [Dicoding](https://www.dicoding.com/) for the comprehensive backend learning path
+- [Hapi.js](https://hapi.dev/) community for excellent documentation
+- All contributors and testers who helped improve this project
 
-## License
+---
 
-This project is open source and free to use.
+**Note**: This project is for educational purposes and learning backend development concepts. For production use, additional security measures and optimizations should be implemented.
